@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker</title>
+    <script type="module">
+        import * as Vue from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+
+        const app = Vue.createApp({
+            data() 
+            {
+                return { count: 0 };
+            },
+            methods: 
+            {
+                increment() 
+                { this.count++; }
+            }
+        });
+
+        app.mount("#app");
+    </script>
+    <style>
+        button
+        {
+            padding: 10px 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Clicker</h1>
+        <div>Clicked {{ count }} times</div>
+        <button v-on:click="increment">Click</button>
+    </div>
+</body>
+</html>
