@@ -28,10 +28,50 @@
       </div>
     </div>
   </div>
+
+  <Popup :isOpen="showDeletePopup" @confirm="confirmDelete" @cancel="cancelDelete">
+    <h3>Delete?</h3>
+    <p>Please ensure and then confirm!</p>
+    <div class="actions">
+      <button class="cancel-btn" @click="cancelDelete">No, cancel!</button>
+      <button class="confirm-btn" @click="confirmDelete">Yes, delete it!</button>
+    </div>
+  </Popup>
 </template>
+
+
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import Popup from './Popup.vue';
+
+const showDeletePopup = ref(false);
+const taskToDelete = ref(null);
+
+const removeTask = (id) => {
+  taskToDelete.value = id;
+  showDeletePopup.value = true;
+};
+
+const confirmDelete = async () => {
+  try {
+    await fetch(`${API_URL}/${taskToDelete.value}`, {
+      method: 'DELETE'
+    });
+    tasks.value = tasks.value.filter(task => task.id !== taskToDelete.value);
+    showDeletePopup.value = false;
+    taskToDelete.value = null;
+  } catch (error) {
+    console.error('Ошибка удаления задачи:', error);
+    showDeletePopup.value = false;
+  }
+};
+
+const cancelDelete = () => {
+  showDeletePopup.value = false;
+  taskToDelete.value = null;
+};
+
 
 const API_URL = 'https://jsonplaceholder.typicode.com/todos';
 const USER_ID = 1;
@@ -96,20 +136,6 @@ const toggleTask = async (task) => {
   }
 };
 
-// Удаление задачи
-const removeTask = async (id) => {
-  try {
-    await fetch(`${API_URL}/${id}`, {
-      method: 'DELETE',
-      body: JSON.stringify({
-        userId: USER_ID,
-      }),
-    });
-    tasks.value = tasks.value.filter(task => task.id !== id);
-  } catch (error) {
-    console.error('Ошибка удаления задачи:', error);
-  }
-};
 
 // Загружаем задачи при монтировании
 onMounted(fetchTasks);
@@ -125,8 +151,16 @@ onMounted(fetchTasks);
     font-family: Arial, sans-serif;
   }
   
+  p {
+    color: #333;
+  }
+
   h1 {
     text-align: center;
+    color: #333;
+  }
+
+  h3 {
     color: #333;
   }
   

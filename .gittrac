@@ -3,6 +3,7 @@ clicker_via_script.html
 
 todo-list/src/App.vue
 todo-list/src/components/TodoList.vue
+todo-list/src/components/Popup.vue
 
 clicker/src/App.vue
 clicker/src/components/clicker.vue

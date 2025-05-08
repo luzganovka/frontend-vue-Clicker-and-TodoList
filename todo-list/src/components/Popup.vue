@@ -1,0 +1,77 @@
+<template>
+    <Teleport to="body">
+      <div v-if="isOpen" class="popup-overlay">
+        <div class="popup-content">
+          <slot></slot>
+        </div>
+      </div>
+    </Teleport>
+  </template>
+  
+  <script setup>
+  import { ref } from 'vue';
+  
+  const props = defineProps({
+    isOpen: {
+      type: Boolean,
+      required: true
+    }
+  });
+  
+  const emit = defineEmits(['confirm', 'cancel']);
+  
+  const confirm = () => {
+    emit('confirm');
+  };
+  
+  const cancel = () => {
+    emit('cancel');
+  };
+  </script>
+  
+  <style scoped>
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .popup-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .cancel-btn {
+    background: #f0f0f0;
+  }
+  
+  .confirm-btn {
+    background: #ff4444;
+    color: white;
+  }
+  </style>
