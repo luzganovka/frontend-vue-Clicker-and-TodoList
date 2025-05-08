@@ -29,41 +29,42 @@
     </div>
   </template>
   
+  
   <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
+  
+  const STORAGE_KEY = 'vue-todo-list';
   
   const newTask = ref('');
   const tasks = ref([]);
   
-  // Загрузка задач из localStorage
+  // Загрузка задач при монтировании компонента
   onMounted(() => {
-    const savedTasks = localStorage.getItem('todo-tasks');
+    const savedTasks = localStorage.getItem(STORAGE_KEY);
     if (savedTasks) {
       tasks.value = JSON.parse(savedTasks);
     }
   });
   
-  // Добавление новой задачи
+  // Автоматическое сохранение при изменении задач
+  watch(tasks, (newTasks) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newTasks));
+  }, { deep: true });
+  
   const addTask = () => {
     if (newTask.value.trim()) {
       tasks.value.push({
+        id: Date.now(),
         text: newTask.value.trim(),
-        completed: false
+        completed: false,
+        createdAt: new Date().toISOString()
       });
       newTask.value = '';
-      saveTasks();
     }
   };
   
-  // Удаление задачи
-  const removeTask = (index) => {
-    tasks.value.splice(index, 1);
-    saveTasks();
-  };
-  
-  // Сохранение задач в localStorage
-  const saveTasks = () => {
-    localStorage.setItem('todo-tasks', JSON.stringify(tasks.value));
+  const removeTask = (id) => {
+    tasks.value = tasks.value.filter(task => task.id !== id);
   };
   </script>
   
